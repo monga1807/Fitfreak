@@ -34,6 +34,8 @@ import ProtectedRoute from "./components/protectedRoute.jsx";
 import HabitsPage from "./pages/habits.jsx";
 import JournalPage from "./pages/journal.jsx";
 import FitnessPage from "./pages/fitness.jsx";
+import Layout from "./components/layout.jsx";
+import AnalyticsPage from "./pages/analytics.jsx";
 
 
 
@@ -50,7 +52,9 @@ function App() {
         path="/"
         element={
           <ProtectedRoute>
+            <Layout>
             <Dashboard />
+            </Layout>
           </ProtectedRoute>
         }
       />
@@ -58,7 +62,9 @@ function App() {
   path="/journal"
   element={
     <ProtectedRoute>
+      <Layout>
       <JournalPage />
+      </Layout>
     </ProtectedRoute>
   }
 />
@@ -66,14 +72,35 @@ function App() {
   path="/fitness"
   element={
     <ProtectedRoute>
+      <Layout>
       <FitnessPage />
+      </Layout>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/analytics"
+  element={
+    <ProtectedRoute>
+      <Layout>
+        <AnalyticsPage />
+      </Layout>
     </ProtectedRoute>
   }
 />
 
 
 // inside Routes alongside other routes:
-      <Route path="/habits" element={<ProtectedRoute><HabitsPage /></ProtectedRoute>} />
+      <Route
+       path="/habits"
+        element={
+        <ProtectedRoute>
+          <Layout>
+        <HabitsPage />
+        </Layout>
+        </ProtectedRoute>} />
+
       {/* fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

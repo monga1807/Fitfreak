@@ -1,55 +1,101 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
-const linkStyle = ({ isActive }) => ({
-  padding: "8px 12px",
-  borderRadius: 6,
-  textDecoration: "none",
-  fontWeight: 500,
-  color: isActive ? "white" : "#333",
-  background: isActive ? "#2563eb" : "transparent"
-});
-
 export default function Navbar() {
   const { user, logout } = useContext(AuthContext);
+  const [open, setOpen] = useState(false);
+
+  const linkClass = ({ isActive }) =>
+    `block px-4 py-2 rounded-lg font-medium transition ${
+      isActive
+        ? "bg-primary text-white"
+        : "text-slate-700 hover:bg-slate-100"
+    }`;
 
   return (
-    <div style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      padding: "12px 20px",
-      borderBottom: "1px solid #eee",
-      background: "#fafafa"
-    }}>
-      <div style={{ fontWeight: 700 }}>🚀 Fitfreak</div>
+    <header className="relative sticky top-0 z-50 bg-white border-b shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
 
-      <div style={{ display: "flex", gap: 8 }}>
-        <NavLink to="/" style={linkStyle}>Dashboard</NavLink>
-        <NavLink to="/habits" style={linkStyle}>Habits</NavLink>
-        <NavLink to="/journal" style={linkStyle}>Journal</NavLink>
-        <NavLink to="/fitness" style={linkStyle}>Fitness</NavLink>
-        <NavLink to="/analytics" style={linkStyle}>Analytics</NavLink>
+        {/* Logo */}
+        <div className="text-xl font-extrabold text-primary flex items-center">
+          <img src="gym.svg" alt="gym-emoji" style={{ width: 18, height: 18 }} />FitFreak
+        </div>
 
-      </div>
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex gap-2">
+          <NavLink to="/" className={linkClass}>Dashboard</NavLink>
+          <NavLink to="/habits" className={linkClass}>Habits</NavLink>
+          <NavLink to="/journal" className={linkClass}>Journal</NavLink>
+          <NavLink to="/fitness" className={linkClass}>Fitness</NavLink>
+          <NavLink to="/analytics" className={linkClass}>Analytics</NavLink>
+        </nav>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 13 }}>
-          {user?.name}
-        </span>
+        {/* Desktop User */}
+        <div className="hidden md:flex items-center gap-3">
+          <span className="text-sm font-medium">{user?.name}</span>
+          <button
+            onClick={logout}
+            className="px-3 py-1.5 rounded-md bg-accent text-white text-sm hover:opacity-90"
+          >
+            Logout
+          </button>
+        </div>
+
+        {/* Mobile Menu Button */}
         <button
-          onClick={logout}
-          style={{
-            padding: "6px 10px",
-            borderRadius: 6,
-            border: "1px solid #ddd",
-            cursor: "pointer"
-          }}
+          onClick={() => setOpen(!open)}
+          className="md:hidden p-2 rounded-lg hover:bg-slate-100"
         >
-          Logout
+          ☰
         </button>
       </div>
-    </div>
+
+      {/* Mobile Dropdown */}
+       {open && (
+        <div className="md:hidden absolute right-4 top-16 w-56 bg-white rounded-xl shadow-xl border z-50">
+
+
+            {/* User Info */}
+  <div className="px-4 py-3 border-b">
+    <div className="font-semibold truncate">{user?.name}</div>
+    <div className="text-xs text-slate-500">Account</div>
+  </div>
+
+  {/* Links */}
+  <div className="p-2 space-y-1">
+    <NavLink onClick={() => setOpen(false)} to="/" className={linkClass}>
+      Dashboard
+    </NavLink>
+    <NavLink onClick={() => setOpen(false)} to="/habits" className={linkClass}>
+      Habits
+    </NavLink>
+    <NavLink onClick={() => setOpen(false)} to="/journal" className={linkClass}>
+      Journal
+    </NavLink>
+    <NavLink onClick={() => setOpen(false)} to="/fitness" className={linkClass}>
+      Fitness
+    </NavLink>
+    <NavLink onClick={() => setOpen(false)} to="/analytics" className={linkClass}>
+      Analytics
+    </NavLink>
+  </div>
+
+  {/* Logout */}
+  <div className="p-2 border-t">
+    <button
+      onClick={() => {
+        logout();
+        setOpen(false);
+      }}
+      className="w-full px-3 py-2 rounded-lg bg-accent text-white font-semibold"
+    >
+      Logout
+    </button>
+  </div>
+
+        </div>
+      )}
+    </header>
   );
 }

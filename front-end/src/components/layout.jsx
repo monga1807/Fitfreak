@@ -3,11 +3,12 @@ import Navbar from "./navbar";
 
 export default function Layout({ children }) {
   return (
-    <div style={{ minHeight: "100vh", background: "#f6f7fb" }}>
+    <div className="min-h-screen">
       <Navbar />
-      <div style={{ padding: 20 }}>
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {children}
-      </div>
+      </main>
     </div>
   );
 }
+

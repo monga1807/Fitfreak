@@ -1,75 +1,63 @@
 // src/pages/Habits.jsx
 import React, { useState } from "react";
 import useHabits from "../hooks/useHabits";
-import HabitItem from "../components/habitItem";
+import HabitItem from "../components/HabitItem";
 
 export default function HabitsPage() {
-  const { habits, loading, error, addHabit, markDone } = useHabits();
+  const { habits, loading, addHabit, markDone } = useHabits();
   const [form, setForm] = useState({ title: "", description: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [msg, setMsg] = useState("");
 
-  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const onChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const onSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setMsg("");
-    if (!form.title.trim()) return setMsg("Title is required");
-    setSubmitting(true);
-    try {
-      await addHabit({ title: form.title.trim(), description: form.description });
-      setForm({ title: "", description: "" });
-      setMsg("Habit added");
-      setTimeout(() => setMsg(""), 1600);
-    } catch (err) {
-      setMsg(err.response?.data?.message || "Failed to add habit");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const onMark = async (habitId) => {
-    try {
-      await markDone(habitId);
-    } catch (err) {
-      alert(err.response?.data?.message || "Failed to mark done");
-    }
+    if (!form.title.trim()) return;
+    await addHabit(form);
+    setForm({ title: "", description: "" });
   };
 
   return (
-    <div style={{ maxWidth: 900, margin: "24px auto", padding: 20 }}>
-      <h2>Habits</h2>
+    <div>
+      <h1 className="text-3xl font-extrabold">Habits</h1>
 
-      <form onSubmit={onSubmit} style={{ marginBottom: 20 }}>
+      {/* Add Habit */}
+      <form
+        onSubmit={submit}
+        className="bg-white p-5 rounded-xl shadow mt-6 flex flex-col sm:flex-row gap-4"
+      >
         <input
           name="title"
-          placeholder="Habit title (e.g. Drink water)"
+          placeholder="Habit title"
           value={form.title}
           onChange={onChange}
-          style={{ width: "60%", padding: 8, marginRight: 8 }}
+          className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
         />
+
         <input
           name="description"
-          placeholder="Short description (optional)"
+          placeholder="Description (optional)"
           value={form.description}
           onChange={onChange}
-          style={{ width: "30%", padding: 8, marginRight: 8 }}
+          className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
         />
-        <button type="submit" disabled={submitting} style={{ padding: "8px 12px" }}>
-          {submitting ? "Adding..." : "Add"}
+
+        <button
+          className="bg-primary text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90"
+        >
+          Add
         </button>
-        {msg && <div style={{ marginTop: 8 }}>{msg}</div>}
       </form>
 
-      {loading && <div>Loading habits...</div>}
-      {error && <div style={{ color: "red" }}>Failed to load habits</div>}
-
-      <div>
-        {habits.length === 0 && !loading ? (
-          <div>No habits yet — add your first one.</div>
+      {/* Habit List */}
+      <div className="mt-8 grid gap-4">
+        {loading ? (
+          <p>Loading...</p>
+        ) : habits.length === 0 ? (
+          <p className="text-slate-500">No habits yet.</p>
         ) : (
           habits.map((h) => (
-            <HabitItem key={h._id} habit={h} onMarkDone={onMark} />
+            <HabitItem key={h._id} habit={h} onMarkDone={markDone} />
           ))
         )}
       </div>

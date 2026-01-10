@@ -4,21 +4,18 @@ export default function StatCard({ title, value, subtitle, onClick }) {
   return (
     <div
       onClick={onClick}
-      style={{
-        flex: 1,
-        padding: 20,
-        borderRadius: 12,
-        background: "white",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
-        cursor: onClick ? "pointer" : "default"
-      }}
+      className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition cursor-pointer"
     >
-      <div style={{ fontSize: 14, color: "#666" }}>{title}</div>
-      <div style={{ fontSize: 28, fontWeight: 700, marginTop: 6 }}>
+      <div className="text-sm font-semibold text-slate-500">
+        {title}
+      </div>
+
+      <div className="mt-2 text-3xl font-extrabold text-slate-900">
         {value}
       </div>
+
       {subtitle && (
-        <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>
+        <div className="mt-1 text-xs font-medium text-slate-400">
           {subtitle}
         </div>
       )}

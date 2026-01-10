@@ -1,17 +1,21 @@
 // src/pages/Register.jsx
-import React, { useState, useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext.jsx";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { Link } from "react-router-dom";
+import Input from "../components/ui/input";
+import Button from "../components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const { registerUser } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const onChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,34 +34,51 @@ export default function Register() {
   };
 
   return (
-    <div style={{ maxWidth: 420, margin: "40px auto", padding: 20 }}>
-      <h2>Create account</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name</label>
-          <input name="name" value={form.name} onChange={onChange} required />
+    <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <form className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md" onSubmit={handleSubmit}>
+        <h1 className="text-2xl font-extrabold mb-6">Create Account</h1>
+
+        <div className="space-y-4">
+          <Input
+            name="name"
+            placeholder="Full name"
+            value={form.name}
+            onChange={onChange}
+          />
+
+          <Input
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={onChange}
+          />
+
+          <Input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={onChange}
+          />
+
+          <Button variant="accent" className="w-full">
+            {loading ? "Creating..." : "Register"}
+          </Button>
+
+          {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
         </div>
 
-        <div>
-          <label>Email</label>
-          <input name="email" type="email" value={form.email} onChange={onChange} required />
-        </div>
-
-        <div>
-          <label>Password</label>
-          <input name="password" type="password" value={form.password} onChange={onChange} required />
-        </div>
-
-        {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
-
-        <button type="submit" disabled={loading} style={{ marginTop: 12 }}>
-          {loading ? "Creating..." : "Register"}
-        </button>
+        {/* 👇 Existing user link */}
+        <p className="text-sm text-center text-slate-600 mt-6">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-primary font-semibold hover:underline"
+          >
+            Login
+          </Link>
+        </p>
       </form>
-
-      <p style={{ marginTop: 12 }}>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
     </div>
   );
 }

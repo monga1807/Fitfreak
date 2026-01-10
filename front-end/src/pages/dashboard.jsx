@@ -56,13 +56,12 @@ export default function Dashboard() {
 
   const loadStats = async () => {
     try {
-      // Fetch in parallel
       const [habitsRes, journalRes, fitnessTodayRes, checksRes] =
         await Promise.all([
           api.get("/habits"),
           api.get("/journal"),
           api.get("/fitness/today"),
-          api.get("/habits/checks") // defaults to today
+          api.get("/habits/checks")
         ]);
 
       const habits = habitsRes.data.habits || [];
@@ -70,32 +69,25 @@ export default function Dashboard() {
       const todayFitness = fitnessTodayRes.data.log;
       const checksByHabit = checksRes.data.byHabit || {};
 
-      const doneCount = Object.keys(checksByHabit).length;
-
       setStats({
         habits: habits.length,
-        habitsDoneToday: doneCount,
+        habitsDoneToday: Object.keys(checksByHabit).length,
         journals: journals.length,
         weight: todayFitness?.weight ?? "-",
         water: todayFitness?.water ?? "-"
       });
     } catch (err) {
-      console.error("Dashboard load error:", err);
+      console.error("Dashboard error:", err);
     }
   };
 
   return (
     <div>
-      <h2>Dashboard</h2>
+      <h1 className="text-3xl font-extrabold tracking-tight">
+        Dashboard
+      </h1>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: 16,
-          marginTop: 20
-        }}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
         <StatCard
           title="Total Habits"
           value={stats.habits}
@@ -125,13 +117,32 @@ export default function Dashboard() {
         />
       </div>
 
-      <div style={{ marginTop: 30 }}>
-        <h3>Quick Actions</h3>
+      <div className="mt-12">
+        <h2 className="text-xl font-bold mb-4">
+          Quick Actions
+        </h2>
 
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <button onClick={() => navigate("/habits")}>➕ Add Habit</button>
-          <button onClick={() => navigate("/journal")}>📝 Write Journal</button>
-          <button onClick={() => navigate("/fitness")}>💪 Update Fitness</button>
+        <div className="flex flex-wrap gap-4">
+          <button
+            onClick={() => navigate("/habits")}
+            className="px-6 py-3 rounded-xl bg-primary text-white font-semibold shadow hover:opacity-90 transition"
+          >
+            ➕ Add Habit
+          </button>
+
+          <button
+            onClick={() => navigate("/journal")}
+            className="px-6 py-3 rounded-xl bg-accent text-white font-semibold shadow hover:opacity-90 transition"
+          >
+            📝 Write Journal
+          </button>
+
+          <button
+            onClick={() => navigate("/fitness")}
+            className="px-6 py-3 rounded-xl bg-slate-800 text-white font-semibold shadow hover:opacity-90 transition"
+          >
+            💪 Update Fitness
+          </button>
         </div>
       </div>
     </div>

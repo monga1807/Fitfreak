@@ -117,29 +117,21 @@ export function AuthProvider({ children }) {
     return res.data;
   };
 
-//   const login = async (email, password) => {
-//   // just to see it’s being called
-//   console.log("login() called with:", email, password);
+const googleLogin = async (googleToken) => {
+  const res = await api.post("/auth/google", {
+    token: googleToken
+  });
 
-//   const res = await api.post("/auth/login", { email, password });
-//   console.log("login response:", res.data); // debug output
+  const token = res.data.token;
+  if (!token) throw new Error("No token returned");
 
-//   const token = res.data.token;
+  localStorage.setItem("token", token);
+  api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  setUser(res.data.user);
 
-//   if (!token) {
-//     throw new Error("No token returned from backend");
-//   }
+  return res.data;
+};
 
-//   // 1. Save token in localStorage
-//   localStorage.setItem("token", token);
-//   console.log("Token saved to localStorage:", token);
-
-//   // 2. Attach token to axios defaults
-//   api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-//   // 3. Save user
-//   setUser(res.data.user);
-// };
 
 
   const registerUser = async (name, email, password) => {
@@ -157,7 +149,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, registerUser, logout, fetchUser }}>
+    <AuthContext.Provider value={{ user, loading, login, googleLogin, registerUser, logout, fetchUser }}>
       {children}
     </AuthContext.Provider>
   );

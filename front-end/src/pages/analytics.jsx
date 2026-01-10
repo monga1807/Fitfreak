@@ -28,45 +28,46 @@ export default function AnalyticsPage() {
     }
   };
 
-  // Sort by date ascending for charts
   const chartData = [...logs].sort((a, b) =>
     a.date.localeCompare(b.date)
   );
 
   return (
     <div>
-      <h2>Analytics</h2>
+      <h1 className="text-3xl font-extrabold mb-8">Analytics</h1>
 
-      {/* Weight Chart */}
-      <div style={{ background: "white", padding: 20, borderRadius: 12, marginBottom: 30 }}>
-        <h3>Weight Progress</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="weight"
-              strokeWidth={2}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Weight Chart */}
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h3 className="font-bold mb-4">📈 Weight Progress</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="weight"
+                strokeWidth={3}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* Water Chart */}
-      <div style={{ background: "white", padding: 20, borderRadius: 12 }}>
-        <h3>Water Intake</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="water" />
-          </BarChart>
-        </ResponsiveContainer>
+        {/* Water Chart */}
+        <div className="bg-white p-6 rounded-xl shadow">
+          <h3 className="font-bold mb-4">💧 Water Intake</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="water" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

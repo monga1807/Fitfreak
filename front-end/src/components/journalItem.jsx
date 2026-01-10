@@ -1,52 +1,75 @@
 import React, { useState } from "react";
+import Button from "../components/ui/button";
+import Textarea from "../components/ui/textArea";
+import Input from "../components/ui/input";
 
 export default function JournalItem({ entry, onEdit, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState(entry.content);
   const [title, setTitle] = useState(entry.title || "");
+  const [content, setContent] = useState(entry.content);
   const [mood, setMood] = useState(entry.mood || "");
 
-  const saveEdit = () => {
+  const save = () => {
     onEdit(entry._id, { title, content, mood });
     setIsEditing(false);
   };
 
   return (
-    <div style={{
-      border: "1px solid #ddd",
-      padding: 16,
-      borderRadius: 8,
-      marginBottom: 12
-    }}>
+    <div className="bg-white rounded-xl p-6 shadow hover:shadow-lg transition">
       {isEditing ? (
-        <>
-          <input
+        <div className="space-y-3">
+          <Input
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
+            onChange={(e) => setTitle(e.target.value)}
           />
-          <textarea
+
+          <Textarea
             rows={4}
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          <input
+
+          <Input
             value={mood}
-            onChange={(e) => setMood(e.target.value)}
             placeholder="Mood (optional)"
+            onChange={(e) => setMood(e.target.value)}
           />
-          <button onClick={saveEdit}>Save</button>
-          <button onClick={() => setIsEditing(false)}>Cancel</button>
-        </>
+
+          <div className="flex gap-3">
+            <Button onClick={save}>Save</Button>
+            <Button variant="outline" onClick={() => setIsEditing(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
       ) : (
         <>
-          <h4>{entry.title || "Untitled"}</h4>
-          <p>{entry.content}</p>
-          {entry.mood && <small>Mood: {entry.mood}</small>}
-          <div style={{ marginTop: 8 }}>
-            <button onClick={() => setIsEditing(true)}>Edit</button>
-            <button onClick={() => onDelete(entry._id)}>Delete</button>
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-bold text-lg">
+                {entry.title || "Untitled"}
+              </h3>
+              {entry.mood && (
+                <span className="inline-block mt-1 px-2 py-1 text-xs rounded-full bg-accent text-white">
+                  {entry.mood}
+                </span>
+              )}
+            </div>
+
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setIsEditing(true)}>
+                Edit
+              </Button>
+              <Button variant="dark" onClick={() => onDelete(entry._id)}>
+                Delete
+              </Button>
+            </div>
           </div>
+
+          <p className="mt-4 text-slate-700 whitespace-pre-wrap">
+            {entry.content}
+          </p>
         </>
       )}
     </div>

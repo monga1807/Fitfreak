@@ -9,11 +9,6 @@ const fitnessRoutes = require("./routes/fitness");
 
 
 
-
-
-
-
-
 const app = express();
 
 app.use(cors());

@@ -4,62 +4,44 @@ import { getStreak } from "../services/habitService";
 
 export default function HabitItem({ habit, onMarkDone }) {
   const [streak, setStreak] = useState(null);
-  const [loadingStreak, setLoadingStreak] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
-    async function load() {
-      try {
-        setLoadingStreak(true);
-        const res = await getStreak(habit._id);
-        if (mounted) setStreak(res.data.streak);
-      } catch (err) {
-        if (mounted) setStreak(null);
-      } finally {
-        if (mounted) setLoadingStreak(false);
-      }
+    loadStreak();
+  }, []);
+
+  const loadStreak = async () => {
+    try {
+      const res = await getStreak(habit._id);
+      setStreak(res.data.streak);
+    } catch {
+      setStreak(0);
     }
-    load();
-    return () => (mounted = false);
-  }, [habit._id]);
+  };
 
   return (
-    <div style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: 12,
-      border: "1px solid #eee",
-      borderRadius: 8,
-      marginBottom: 8
-    }}>
+    <div className="bg-white rounded-xl p-5 shadow hover:shadow-lg transition flex justify-between items-center">
       <div>
-        <div style={{ fontWeight: 600 }}>{habit.title}</div>
-        {habit.description && <div style={{ fontSize: 13, color: "#555" }}>{habit.description}</div>}
-        <div style={{ fontSize: 12, color: "#777", marginTop: 6 }}>
-          {loadingStreak ? "..." : `Streak: ${streak ?? 0} days`}
+        <h3 className="font-bold text-lg">{habit.title}</h3>
+        {habit.description && (
+          <p className="text-sm text-slate-500">{habit.description}</p>
+        )}
+
+        <div className="mt-2 text-sm font-medium text-primary">
+          🔥 Streak: {streak ?? 0} days
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <div style={{ fontSize: 12, color: habit.doneToday ? "green" : "#999" }}>
-          {habit.doneToday ? "Done today" : "Not done"}
-        </div>
-        <button
-          onClick={() => onMarkDone(habit._id)}
-          disabled={habit.doneToday}
-          style={{
-            padding: "8px 12px",
-            borderRadius: 6,
-            background: habit.doneToday ? "#e6f4ea" : "#2563eb",
-            color: habit.doneToday ? "#064e3b" : "white",
-            border: "none",
-            cursor: habit.doneToday ? "not-allowed" : "pointer"
-          }}
-        >
-          {habit.doneToday ? "✓" : "Mark done"}
-        </button>
-      </div>
+      <button
+        onClick={() => onMarkDone(habit._id)}
+        disabled={habit.doneToday}
+        className={`px-4 py-2 rounded-lg font-semibold transition ${
+          habit.doneToday
+            ? "bg-green-100 text-green-700 cursor-not-allowed"
+            : "bg-primary text-white hover:opacity-90"
+        }`}
+      >
+        {habit.doneToday ? "Done ✅" : "Mark Done"}
+      </button>
     </div>
   );
 }

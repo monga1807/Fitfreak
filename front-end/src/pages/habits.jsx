@@ -1,7 +1,7 @@
 // src/pages/Habits.jsx
 import React, { useState } from "react";
 import useHabits from "../hooks/useHabits";
-import HabitItem from "../components/HabitItem";
+import HabitItem from "../components/habitItem";
 
 export default function HabitsPage() {
   const { habits, loading, addHabit, markDone } = useHabits();
